@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--
+      If you are serving your web app in a path other than the root, change the
+      href value below to reflect the base path you are serving from.
+
+      The path provided below has to start and end with a slash "/" in order for
+      it to work correctly.
+
+      For more details:
+      * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+      This is a placeholder for base href that will be replaced by the value of
+      the `--base-href` argument provided to `flutter build`.
+    -->
+    <base href="$FLUTTER_BASE_HREF">
+
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A new Flutter project.">
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="wa_app">
+    <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+     <!-- Use Module Bundler above vs browser modules below for production -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"> </script> -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"> </script> -->  
+
+    <!-- Stripe Library -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Start Code Implementation -->
+    <title>WoAccelerator</title>
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam&display=swap" rel="stylesheet">
+
+
+    <style>
+        body, html {
+            margin: 0;
+        }
+
+        .appLoadingContainer {
+            display: flex;
+            font-size: 18px;
+            width: 100%;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .appLoading {
+            width: 500px;
+            text-align: center;
+            padding: 15px;
+            color: #212529 !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .appLoading h1 {
+            font-size: 64px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin: 0 0 20px;
+        }
+
+        .appLoadingBar {
+            background-color: #e8e8e8;
+            height: 10px;
+            width: 100%;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .appLoadingBar::before {
+            content: '';
+            background-color: #1a79e2;
+            height: 10px;
+            display: block;
+            margin: 15px 0;
+            border-radius: 5px;
+            animation: appLoadAnim 4s;
+        }
+
+        @keyframes appLoadAnim {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- This script installs service_worker.js to provide PWA functionality to
+     application. For more information, see:
+     https://developers.google.com/web/fundamentals/primers/service-workers -->
+
+     <meta name="google-signin-client_id" content="36287972865-9aajmiqadhpd0vu5c8hpvan8hc90dgpr.apps.googleusercontent.com">
+ 
+<!--Facebook SDK config -->
+<script>
+  
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId            : '225700546408886',
+      autoLogAppEvents : true,
+      xfbml            : true,
+      version          : 'v13.0'
+    });
+  };
+</script>
+
+<!-- Facebook JS CDN SDK -->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+<!-- for interop with dart through this plugin -->
+<script src="https://flutterfacebooklogin.s3.us-east-2.amazonaws.com/web_interop.js"></script>
+     
+ <!-- Version 9 Firebase Module -->
+ <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"; 
+    import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app-check.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js"; 
+
+    var currentUrl = window.location.href;  //Get the current url app is being served from
+    console.log(currentUrl);
+
+// If conditionals for Firebase Environments
+if (currentUrl == "https://woaccelerator-dev.firebaseapp.com/" || 
+    currentUrl == "https://woaccelerator-dev.web.app/" ||
+    currentUrl == "https://woaccelerator-dev.firebaseapp.com/#/" || 
+    currentUrl == "https://woaccelerator-dev.web.app/#/"  ||
+    currentUrl.indexOf("http://localhost/") > -1
+    )
+
+{
+
+   var firebaseConfig = {
+  apiKey: "AIzaSyBwVKgQIEJ35y3jFQJDZ7OMIQyEfHE_mR4",
+  authDomain: "woaccelerator-dev.firebaseapp.com",
+  projectId: "woaccelerator-dev",
+  storageBucket: "woaccelerator-dev.appspot.com",
+  messagingSenderId: "892810895785",
+  appId: "1:892810895785:web:9a37e32c0877be691724b8",
+  measurementId: "G-KG5T8S704K"
+};
+console.log("dev");
+     // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+    // Initialize Firebase Authentication and get a reference to the service
+  const auth = getAuth(app);
+    // Create a ReCaptchaEnterpriseProvider instance using your reCAPTCHA Enterprise
+    // site key and pass it to initializeAppCheck().
+  const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider("6LfmnOQeAAAAAHtYaQrM84KoUAjeQ1JmM90BYjBi"),
+    isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+});
+
+} 
+
+else if ( currentUrl == "https://woaccelerator-qa.web.app/" ||
+          currentUrl == "https://woaccelerator-qa.web.app/#/")
+{
+
+   var firebaseConfig = {
+    apiKey: 'AIzaSyCWaJYBzEcfJp7PkwUg9MHQiVspYceSfgA',
+    appId: '1:36287972865:web:4d7b3d0ac766323b122200',
+    messagingSenderId: '36287972865',
+    projectId: 'flutter-midterm-8d336',
+    authDomain: 'flutter-midterm-8d336.firebaseapp.com',
+    storageBucket: 'flutter-midterm-8d336.appspot.com',
+    measurementId: 'G-GL5YXW8H8W',
+  
+};
+console.log("qa");
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  // Initialize Firebase Authentication and get a reference to the service
+  const auth = getAuth(app);
+  // Initialize Firebase App Check
+   // Create a ReCaptchaEnterpriseProvider instance using your reCAPTCHA Enterprise
+    // site key and pass it to initializeAppCheck().
+    const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider("6Ld-VugeAAAAADyueow4D_4YU61_7-LWL_Pow4BJ"),
+    isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+});
+
+}
+else if (currentUrl == "https://woaccelerator-preprod.web.app/" ||
+         currentUrl == "https://woaccelerator-preprod.web.app/#/")
+{
+
+  var firebaseConfig = {
+    apiKey: 'AIzaSyCWaJYBzEcfJp7PkwUg9MHQiVspYceSfgA',
+    appId: '1:36287972865:web:4d7b3d0ac766323b122200',
+    messagingSenderId: '36287972865',
+    projectId: 'flutter-midterm-8d336',
+    authDomain: 'flutter-midterm-8d336.firebaseapp.com',
+    storageBucket: 'flutter-midterm-8d336.appspot.com',
+    measurementId: 'G-GL5YXW8H8W',
+  
+};
+console.log("pre-prod");
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig); 
+  // Initialize Firebase Authentication and get a reference to the service
+  const auth = getAuth(app);
+   // Create a ReCaptchaEnterpriseProvider instance using your reCAPTCHA Enterprise
+    // site key and pass it to initializeAppCheck().
+    const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider("6LflP-geAAAAALIhfamOrops9tM3fgIvS-junq28"),
+    isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+});
+
+}
+  else if (currentUrl == "https://app.woaccelerator.com" ||
+           currentUrl == "https://app.woaccelerator.com/#/")
+ 
+  {
+  var firebaseConfig = {
+    apiKey: 'AIzaSyCWaJYBzEcfJp7PkwUg9MHQiVspYceSfgA',
+    appId: '1:36287972865:web:4d7b3d0ac766323b122200',
+    messagingSenderId: '36287972865',
+    projectId: 'flutter-midterm-8d336',
+    authDomain: 'flutter-midterm-8d336.firebaseapp.com',
+    storageBucket: 'flutter-midterm-8d336.appspot.com',
+    measurementId: 'G-GL5YXW8H8W',
+  
+};
+console.log("production");
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  // Initialize Firebase Authentication and get a reference to the service
+  const auth = getAuth(app);
+  const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider("6LcTG-YeAAAAADVzB7v5BEdP6jRkJLiT0W9VJq3v"),
+    isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+});
+}
+</script>
+
+
+
+<div class="appLoadingContainer">
+    <div class="appLoading">
+       <img src="./icons/img_logo.png" width="422px" height="154px" />
+  <!-- <div> <span style="font-size: 55px;font-family: 'Kalam', cursive;color: red;">WO</span> <span style="color:#1a79e2;font-size: 40px;font-family: 'Eczar', serif;">Accelerator</span>  </div> -->
+    
+  <div class="appLoadingBar"></div>
+    </div>
+</div>
+
+
+<script>
+    var serviceWorkerVersion = null;
+    var scriptLoaded = false;
+    function loadMainDartJs() {
+      if (scriptLoaded) {
+        return;
+      }
+      scriptLoaded = true;
+      var scriptTag = document.createElement('script');
+      scriptTag.src = 'main.dart.js';
+      scriptTag.type = 'application/javascript';
+      document.body.append(scriptTag);
+    }
+
+    if ('serviceWorker' in navigator) {
+      // Service workers are supported. Use them.
+      window.addEventListener('load', function () {
+        // Wait for registration to finish before dropping the <script> tag.
+        // Otherwise, the browser will load the script multiple times,
+        // potentially different versions.
+        var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
+        navigator.serviceWorker.register(serviceWorkerUrl)
+          .then((reg) => {
+            function waitForActivation(serviceWorker) {
+              serviceWorker.addEventListener('statechange', () => {
+                if (serviceWorker.state == 'activated') {
+                  console.log('Installed new service worker.');
+                  loadMainDartJs();
+                }
+              });
+            }
+            if (!reg.active && (reg.installing || reg.waiting)) {
+              // No active web worker and we have installed or are installing
+              // one for the first time. Simply wait for it to activate.
+              waitForActivation(reg.installing || reg.waiting);
+            } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
+              // When the app updates the serviceWorkerVersion changes, so we
+              // need to ask the service worker to update.
+              console.log('New service worker available.');
+              reg.update();
+              waitForActivation(reg.installing);
+            } else {
+              // Existing service worker is still good.
+              console.log('Loading app from service worker.');
+              loadMainDartJs();
+            }
+          });
+
+        // If service worker doesn't succeed in a reasonable amount of time,
+        // fallback to plaint <script> tag.
+        setTimeout(() => {
+          if (!scriptLoaded) {
+            console.warn(
+              'Failed to load app from service worker. Falling back to plain <script> tag.',
+            );
+            loadMainDartJs();
+          }
+        }, 4000);
+      });
+    } else {
+      // Service workers not supported. Just drop the <script> tag.
+      loadMainDartJs();
+    }
+
+</script>
+</body>
+</html>

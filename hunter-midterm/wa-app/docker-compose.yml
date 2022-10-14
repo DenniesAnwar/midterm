@@ -1,0 +1,7 @@
+version: '3'
+services:
+  wo-app:
+    build:
+      context: .
+    volumes:
+      - ./templates:/etc/nginx/templates
